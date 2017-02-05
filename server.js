@@ -28,7 +28,7 @@ const server = http.createServer((req, res) => {
     res.end('Suspicious activity.  Your IP has been noted.');
 
     let fileIndex = Math.floor(count++ / NUMBER_OF_IP_PER_FILE);
-    fs.appendFile('suspicious' + fileIndex + '.txt', requestIP.replace(/\"/g, '') + '\r\n');
+    fs.appendFile(serverConfig.logFolder + 'suspicious_' + process.pid + '_' + fileIndex + '.txt', new Date().toISOString() + ': ' + requestIP.replace(/\"/g, '') + '\r\n');
   }
 });
 
