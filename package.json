@@ -1,0 +1,20 @@
+{
+  "name": "home-server",
+  "version": "0.1.0",
+  "description": "A node http server used for personal purpose",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Dango Technologies",
+  "license": "MIT",
+  "jshintConfig": {
+    "esversion": 6,
+    "node": true
+  },
+  "dependencies": {
+    "ip": "^1.1.4",
+    "range_check": "^1.4.0"
+  }
+}
