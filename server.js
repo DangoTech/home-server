@@ -22,6 +22,7 @@ const server = http.createServer((req, res) => {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
     res.end('Hello World');
+    startKissGoodnight();
   } else {
     res.statusCode = 401;
     res.setHeader('Content-Type', 'text/plain');
@@ -35,3 +36,37 @@ const server = http.createServer((req, res) => {
 server.listen(port, hostname, () => {
   console.log(`Server running at http://${hostname}:${port}/`);
 });
+
+function startKissGoodnight() {
+  let TPLinkLB130 = require('tp-link-lb130');
+  let lb130 = new TPLinkLB130('192.168.1.70');
+
+  lb130.getStatus()
+    .then((onState) => {
+      lb130.changeColor(100, 0, 0, 1000);
+
+      let step = 0;
+      let interval = setInterval(() => {
+
+        if (step < 29) {
+          let colorWheelDeg = 360*((step%6)/6);
+          console.log(`deg: ${colorWheelDeg} | steps: ${step}`);
+          lb130.changeColor(50, colorWheelDeg, 50, 750);
+        }
+
+        if (step === 30) {
+          // reset to original state
+          lb130.changeColor(onState.brightness, onState.hue, onState.saturation, 750);
+        }
+
+        if (step > 30) {
+          // gradual turn off
+          lb130.turnOff(3000);
+          clearInterval(interval);
+        }
+
+        step++;
+      }, 1000);
+
+    });
+}
