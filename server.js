@@ -17,11 +17,13 @@ let count = 0;
 const NUMBER_OF_IP_PER_FILE = 100;
 
 const server = http.createServer((req, res) => {
-  let requestIP = JSON.stringify(req.connection.remoteAddress);
+  let requestIP = req.connection.remoteAddress;
   if (rangeCheck.inRange(requestIP, acceptableIPs)) {
     res.statusCode = 200;
     res.setHeader('Content-Type', 'text/plain');
     res.end('Hello World');
+
+    // start the magic
     startKissGoodnight();
   } else {
     res.statusCode = 401;
@@ -29,7 +31,8 @@ const server = http.createServer((req, res) => {
     res.end('Suspicious activity.  Your IP has been noted.');
 
     let fileIndex = Math.floor(count++ / NUMBER_OF_IP_PER_FILE);
-    fs.appendFile(serverConfig.logFolder + 'suspicious_' + process.pid + '_' + fileIndex + '.txt', new Date().toISOString() + ': ' + requestIP.replace(/\"/g, '') + '\r\n');
+    fs.appendFile(`${serverConfig.logFolder}/suspicious_${process.pid}_${fileIndex}.txt`,
+      `${new Date().toISOString()}: ${requestIP.replace(/\"/g, '')}\r\n`);
   }
 });
 
@@ -43,8 +46,6 @@ function startKissGoodnight() {
 
   lb130.getStatus()
     .then((onState) => {
-      lb130.changeColor(100, 0, 0, 1000);
-
       let step = 0;
       let interval = setInterval(() => {
 
@@ -64,9 +65,7 @@ function startKissGoodnight() {
           lb130.turnOff(3000);
           clearInterval(interval);
         }
-
         step++;
       }, 1000);
-
     });
 }
